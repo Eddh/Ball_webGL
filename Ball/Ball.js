@@ -13,6 +13,7 @@ var viewMatrix = mat4.create();
 var pMatrix = mat4.create();
 var normalMatrix = mat3.create();
 var lightDir = [1, 0.5, 1.3];
+var nbSubdivs = 2;
 
 // var camPos = new glMatrix.ARRAY_TYPE(3);
 // var camTarget = new glMatrix.ARRAY_TYPE(3);
@@ -30,7 +31,7 @@ function initWebGL(canvas){
     if (!gl){
         alert("Could not initialise WebGL, sorry :-(");
     }
-    
+    gl.getExtension("OES_element_index_uint");
 }
 
 function initBuffers(){
@@ -79,53 +80,27 @@ function initBuffers(){
     squareColorBuffer.numItems = 4;
     gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
-    var sphereVertices = [], sphereIndices = [], sphereColors = [];
-    sphereVertices = Object(sphereVertices);
-    sphereIndices = Object(sphereIndices);
-    sphereColors = Object(sphereColors);
-    icoSphere(sphereVertices, sphereIndices, sphereColors, 4);
-    sphereVertices = sphereVertices.valueOf;
-    sphereIndices = sphereIndices.valueOf;
-    sphereColors = sphereColors.valueOf;
-    
-    var msg = "nbVertices : "+ sphereVertices.nbVertices + " nbTriangles : " + sphereIndices.nbTriangles;
-    disp("ok");
-    // Sphere Buffers
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexArrayBuffer);
-    // var sphereVertices = icosahedronVertices();
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
-    sphereVertexArrayBuffer.itemSize = 3;
-    sphereVertexArrayBuffer.numItems = sphereVertices.nbVertices;
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphereVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
-    
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
-    // var sphereIndices = icosahedronIndices();
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(sphereIndices), gl.STATIC_DRAW);
-    sphereIndexBuffer.itemSize = 1;
-    sphereIndexBuffer.numItems = sphereIndices.nbTriangles*3;
-    
-    
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
-    // var sphereColors = icosphereColors(0);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereColors), gl.STATIC_DRAW);
-    sphereColorBuffer.itemSize = 4;
-    sphereColorBuffer.numItems = sphereColors.nbColors;
-    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, sphereColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-    // var msg = "";
-    // for(var i = 0 ; i < sphereIndices.nbTriangles*3 ; i ++){
-        // msg+= " " + sphereIndices[i];
-    // }
-    // for(var i = 0 ; i < sphereVertices.nbVertices*3 ; i ++){
-        // console.log(sphereVertices[i]+" "+i);
-    // }
-    // alert(msg);
+    bufferIcosphere(nbSubdivs);
 }
 
 function handleKeyDown(event) {
     var content = document.getElementById('content');
-    if (event.keyCode == 40) {
-        disp("ok");
+    if (event.keyCode == 40){
+        if(nbSubdivs > 0){
+            nbSubdivs--;
+            bufferIcosphere(nbSubdivs);
+        }
     }
+    if(event.keyCode == 38){
+        if(nbSubdivs < 6){
+            nbSubdivs++;
+            bufferIcosphere(nbSubdivs);
+        }
+    }
+    display("nbSubdivs = "+nbSubdivs);
+}
+function handleKeyUp(event){
+    
 }
 
 function drawScene(){
@@ -149,7 +124,7 @@ function drawScene(){
     gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, sphereColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
-    gl.drawElements(gl.TRIANGLES, sphereIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(gl.TRIANGLES, sphereIndexBuffer.numItems, gl.UNSIGNED_INT, 0);
 }
 
 function nextFrame(){

@@ -1,8 +1,8 @@
 // helpers.js
 
-function disp(string){
+function display(string){
     var content = document.getElementById('text');
-    document.getElementById('text').innerHTML = content.innerHTML+string;
+    document.getElementById('text').innerHTML = string;
 }
 function getVertex(vertices, index){
     var v = [];
@@ -145,4 +145,36 @@ function icoSphere(refVertices, refIndices, refColors, nbSubdivs){
     refVertices.valueOf = vertices;
     refIndices.valueOf = indices;
     refColors.valueOf = colors;
+}
+
+function bufferIcosphere(nbSubdivs){
+    var sphereVertices = [], sphereIndices = [], sphereColors = [];
+    sphereVertices = Object(sphereVertices);
+    sphereIndices = Object(sphereIndices);
+    sphereColors = Object(sphereColors);
+    icoSphere(sphereVertices, sphereIndices, sphereColors, nbSubdivs);
+    sphereVertices = sphereVertices.valueOf;
+    sphereIndices = sphereIndices.valueOf;
+    sphereColors = sphereColors.valueOf;
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexArrayBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
+    sphereVertexArrayBuffer.itemSize = 3;
+    sphereVertexArrayBuffer.numItems = sphereVertices.nbVertices;
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphereVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(sphereIndices), gl.STATIC_DRAW);
+    sphereIndexBuffer.itemSize = 1;
+    sphereIndexBuffer.numItems = sphereIndices.nbTriangles*3;
+    
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereColors), gl.STATIC_DRAW);
+    sphereColorBuffer.itemSize = 4;
+    sphereColorBuffer.numItems = sphereColors.nbColors;
+    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, sphereColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    
+    var msg = "nbVertices : "+sphereVertices.nbVertices + " nbTriangles : " + sphereIndices.nbTriangles;
+    alert(msg);
 }
