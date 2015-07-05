@@ -55,6 +55,7 @@ function initShaders(){
     shaderProgram.viewMatrixUniform = gl.getUniformLocation(shaderProgram, "uView");
     shaderProgram.normalMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
     shaderProgram.lightDirUniform = gl.getUniformLocation(shaderProgram, "uLightDir");
+    shaderProgram.viewPosUniform = gl.getUniformLocation(shaderProgram, "uViewPos")
     
 }
 function initUniforms(){
@@ -86,6 +87,7 @@ function initUniforms(){
     gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix3fv(shaderProgram.normalMatrixUniform, false, normalMatrix);
     gl.uniform3fv(shaderProgram.lightDirUniform, lightDir);
+    gl.uniform3fv(shaderProgram.viewPosUniform, viewPos);
 }
 function setMVUniformsSphere(){
     gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, sphereModelMatrix);

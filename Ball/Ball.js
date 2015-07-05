@@ -17,6 +17,7 @@ var pMatrix = mat4.create();
 var normalMatrix = mat3.create();
 var squareNormalMatrix = mat3.create();
 var lightDir = [1, 0.5, 1.3];
+var viewPos = [0, 2, 8];
 var nbSubdivs = 2;
 var nbTriangles;
 var vYSphere = 0;
@@ -110,16 +111,21 @@ function handleKeyDown(event){
     }
     if(event.keyCode == 90){
         mat4.translate(viewMatrix, [0, 0, 0.2]);
+        viewPos[2] -= 0.2;
     }
     if(event.keyCode == 83){
         mat4.translate(viewMatrix, [0.0, 0, -0.2]);
+        viewPos[2] += 0.2;
     }
     if(event.keyCode == 81){
         mat4.translate(viewMatrix, [0.2, 0, 0.0]);
+        viewPos[0] -= 0.2;
     }
     if(event.keyCode == 68){
         mat4.translate(viewMatrix, [-0.2, 0, 0.0]);
+        viewPos[0] += 0.2;
     }
+    gl.uniform3fv(shaderProgram.viewPosUniform, viewPos);
     var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
     display(msg);
 }
