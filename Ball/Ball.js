@@ -20,7 +20,7 @@ var lightDir = [1, 0.5, 1.3];
 var nbSubdivs = 2;
 var nbTriangles;
 var vYSphere = 0;
-var ySphere = 2;
+var ySphere = 3;
 
 // var camPos = new glMatrix.ARRAY_TYPE(3);
 // var camTarget = new glMatrix.ARRAY_TYPE(3);
@@ -138,11 +138,11 @@ function drawScene(){
 }
 
 function nextFrame(){
-    if(ySphere > 1){
-        vYSphere -= 0.001;
+    if(ySphere > 0.6){
+        vYSphere -= 0.0015;
     }
     else{
-       vYSphere = 0.05; 
+       vYSphere = 0.09; 
     }
     
     ySphere += vYSphere;
