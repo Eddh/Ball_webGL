@@ -19,7 +19,8 @@ var squareNormalMatrix = mat3.create();
 var lightDir = [1, 0.5, 1.3];
 var nbSubdivs = 2;
 var nbTriangles;
-var vY = 0;
+var vYSphere = 0;
+var ySphere = 2;
 
 // var camPos = new glMatrix.ARRAY_TYPE(3);
 // var camTarget = new glMatrix.ARRAY_TYPE(3);
@@ -56,10 +57,10 @@ function initBuffers(){
     
     gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
     var vertices = [
-         10.0, -2,  10.0,
-        -10.0, -2,  10.0,
-         10.0, -2,  -10.0,
-        -10.0, -2,  -10.0
+         10.0, 0,  10.0,
+        -10.0, 0,  10.0,
+         10.0, 0,  -10.0,
+        -10.0, 0,  -10.0
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     squareVertexArrayBuffer.itemSize = 3;
@@ -137,9 +138,16 @@ function drawScene(){
 }
 
 function nextFrame(){
+    if(ySphere > 1){
+        vYSphere -= 0.001;
+    }
+    else{
+       vYSphere = 0.05; 
+    }
     
+    ySphere += vYSphere;
     mat4.rotate(sphereModelMatrix, degToRad(1), [0.0, 1.0, 0.0]);
-    mat4.translate(sphereModelMatrix, [0.0, 0.01, 0.0]);
+    mat4.translate(sphereModelMatrix, [0.0, vYSphere, 0.0]);
     updateNormalMatrix();
     
 }

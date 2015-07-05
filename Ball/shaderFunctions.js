@@ -61,10 +61,11 @@ function initUniforms(){
     mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
     
     mat4.identity(sphereModelMatrix);
+    mat4.translate(sphereModelMatrix, [0, 2, 0]);
     mat4.identity(squareModelMatrix);
     
     mat4.identity(viewMatrix);
-    mat4.translate(viewMatrix, [0, 0, -8]);
+    mat4.translate(viewMatrix, [0, -2, -8]);
     
     // mat4.identity(sphereMvMatrix);
     // mat4.translate(sphereMvMatrix, [0, 0, -8]);
