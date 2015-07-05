@@ -94,7 +94,7 @@ function initBuffers(){
     bufferIcosphere(nbSubdivs);
 }
 
-function handleKeyDown(event) {
+function handleKeyDown(event){
     var content = document.getElementById('content');
     if (event.keyCode == 40){
         if(nbSubdivs > 0){
@@ -108,8 +108,23 @@ function handleKeyDown(event) {
             bufferIcosphere(nbSubdivs);
         }
     }
+    if(event.keyCode == 90){
+        mat4.translate(viewMatrix, [0, 0, 0.2]);
+    }
+    if(event.keyCode == 83){
+        mat4.translate(viewMatrix, [0.0, 0, -0.2]);
+    }
+    if(event.keyCode == 81){
+        mat4.translate(viewMatrix, [0.2, 0, 0.0]);
+    }
+    if(event.keyCode == 68){
+        mat4.translate(viewMatrix, [-0.2, 0, 0.0]);
+    }
     var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
     display(msg);
+}
+function handleKeyUp(event){
+    
 }
 
 function drawScene(){
@@ -170,5 +185,6 @@ function start(){
     
     gl.enable(gl.DEPTH_TEST);
     document.onkeydown = handleKeyDown;
+    document.onkeyup = handleKeyUp;
     tick();
 }
