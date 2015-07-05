@@ -7,13 +7,19 @@ var squareIndexBuffer;
 var sphereVertexArrayBuffer;
 var sphereIndexBuffer;
 var sphereColorBuffer;
-var mvMatrix = mat4.create();
-var modelMatrix = mat4.create();
+var sphereMvMatrix = mat4.create();
+var squareMvMatrix = mat4.create();
+
+var sphereModelMatrix = mat4.create();
+var squareModelMatrix = mat4.create();
 var viewMatrix = mat4.create();
 var pMatrix = mat4.create();
 var normalMatrix = mat3.create();
+var squareNormalMatrix = mat3.create();
 var lightDir = [1, 0.5, 1.3];
 var nbSubdivs = 2;
+var nbTriangles;
+var vY = 0;
 
 // var camPos = new glMatrix.ARRAY_TYPE(3);
 // var camTarget = new glMatrix.ARRAY_TYPE(3);
@@ -23,15 +29,19 @@ function degToRad(degrees) {
     return degrees * Math.PI / 180;
 }
 function initWebGL(canvas){
+    gl = null;
     try{
-            gl = canvas.getContext("experimental-webgl");
+            gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
             gl.viewportWidth = canvas.width;
             gl.viewportHeight = canvas.height;
     } catch (e){}
     if (!gl){
         alert("Could not initialise WebGL, sorry :-(");
     }
-    gl.getExtension("OES_element_index_uint");
+    var ret = gl.getExtension("OES_element_index_uint");
+    if(ret == null){
+        alert("could not get Extension OES_element_index_uint");
+    }
 }
 
 function initBuffers(){
@@ -97,10 +107,8 @@ function handleKeyDown(event) {
             bufferIcosphere(nbSubdivs);
         }
     }
-    display("nbSubdivs = "+nbSubdivs);
-}
-function handleKeyUp(event){
-    
+    var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
+    display(msg);
 }
 
 function drawScene(){
@@ -110,7 +118,7 @@ function drawScene(){
     
     // gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
     // gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexArrayBuffer.numItems);
-    
+    setMVUniformsSquare();
     gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
@@ -119,6 +127,7 @@ function drawScene(){
     
     gl.drawElements(gl.TRIANGLES, squareIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     
+    setMVUniformsSphere();
     gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexArrayBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphereVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
@@ -129,11 +138,9 @@ function drawScene(){
 
 function nextFrame(){
     
-    mat4.rotate(modelMatrix, degToRad(1), [0.0, 1.0, 0.0]);
-    
+    mat4.rotate(sphereModelMatrix, degToRad(1), [0.0, 1.0, 0.0]);
+    mat4.translate(sphereModelMatrix, [0.0, 0.01, 0.0]);
     updateNormalMatrix();
-    
-    setMVUniforms();
     
 }
 function tick(){

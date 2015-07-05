@@ -51,8 +51,7 @@ function initShaders(){
     gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
     
     shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-    // shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-    shaderProgram.modelMatrixUniform = gl.getUniformLocation(shaderProgram, "uModel");
+    shaderProgram.sphereModelMatrixUniform = gl.getUniformLocation(shaderProgram, "uModel");
     shaderProgram.viewMatrixUniform = gl.getUniformLocation(shaderProgram, "uView");
     shaderProgram.normalMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
     shaderProgram.lightDirUniform = gl.getUniformLocation(shaderProgram, "uLightDir");
@@ -61,44 +60,51 @@ function initShaders(){
 function initUniforms(){
     mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
     
-    mat4.identity(modelMatrix);
-    
+    mat4.identity(sphereModelMatrix);
+    mat4.identity(squareModelMatrix);
     
     mat4.identity(viewMatrix);
     mat4.translate(viewMatrix, [0, 0, -8]);
     
-    // mat4.identity(mvMatrix);
-    // mat4.translate(mvMatrix, [0, 0, -8]);
+    // mat4.identity(sphereMvMatrix);
+    // mat4.translate(sphereMvMatrix, [0, 0, -8]);
     
     
     
     // var msg = " ";
     // for(var i = 0 ; i < 16 ; i++){
-        // msg += " "+mvMatrix[i]+" ";
+        // msg += " "+sphereMvMatrix[i]+" ";
     // }
     // alert(msg);
-    mat4.multiply(viewMatrix, modelMatrix, mvMatrix);
-    mat4.toInverseMat3(mvMatrix, normalMatrix);
+    mat4.multiply(viewMatrix, sphereModelMatrix, sphereMvMatrix);
+    mat4.toInverseMat3(sphereMvMatrix, normalMatrix);
     mat3.transpose(normalMatrix);
     
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-    gl.uniformMatrix4fv(shaderProgram.modelMatrixUniform, false, modelMatrix);
+    gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, sphereModelMatrix);
     gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
-    gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
     gl.uniformMatrix3fv(shaderProgram.normalMatrixUniform, false, normalMatrix);
     gl.uniform3fv(shaderProgram.lightDirUniform, lightDir);
 }
-function setMVUniforms(){
-    // gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-    gl.uniformMatrix4fv(shaderProgram.modelMatrixUniform, false, modelMatrix);
+function setMVUniformsSphere(){
+    gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, sphereModelMatrix);
     gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix3fv(shaderProgram.normalMatrixUniform, false, normalMatrix);
+}
+function setMVUniformsSquare(){
+    gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, squareModelMatrix);
+    gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
+    gl.uniformMatrix3fv(shaderProgram.normalMatrixUniform, false, squareNormalMatrix);
 }
 function setLightDirUniform(){
     gl.uniform3fv(shaderProgram.lightDirUniform, lightDir);
 }
 function updateNormalMatrix(){
-    mat4.multiply(viewMatrix, modelMatrix, mvMatrix);
-    mat4.toInverseMat3(mvMatrix, normalMatrix);
+    mat4.multiply(viewMatrix, sphereModelMatrix, sphereMvMatrix);
+    mat4.toInverseMat3(sphereMvMatrix, normalMatrix);
     mat3.transpose(normalMatrix);
+    
+    mat4.multiply(viewMatrix, squareModelMatrix, squareMvMatrix);
+    mat4.toInverseMat3(squareMvMatrix, squareNormalMatrix);
+    mat3.transpose(squareNormalMatrix);
 }
