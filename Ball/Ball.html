@@ -48,7 +48,7 @@
                 //vNormal = aVertexPosition;
                 float height = uModel[3][1];
                 float posY = aVertexPosition.y;
-                if(height < 1.0){
+                if(height < 1.0 && posY < 0.0){
                     posY = aVertexPosition.y*height;
                 }
                 vec3 vPos = vec3(aVertexPosition.x, posY, aVertexPosition.z);
