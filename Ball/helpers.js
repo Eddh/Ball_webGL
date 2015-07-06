@@ -70,17 +70,17 @@ function icosahedronIndices(){
     indices.nbTriangles = 20;
     return indices;
 }
-function icosphereColors(nbSubdivs){
+function icosphereColors(nbSubdivs, vertices){
     var colors = [];
-    for(var i = 0 ; i < 20*Math.pow(4, nbSubdivs)*6/4 ; i++){
+    for(var i = 0 ; i < vertices.nbVertices ; i++){
         
         colors.push(Math.random());
         colors.push(Math.random());
         colors.push(Math.random());
         
-        // colors.push(0.7);
+        // colors.push(0.2);
         // colors.push(0.5);
-        // colors.push(0.31);
+        // colors.push(0.5);
         colors.push(1);
     }
     return colors;
@@ -135,11 +135,9 @@ function icoSphere(refVertices, refIndices, refColors, nbSubdivs){
         indices.nbTriangles = 20*Math.pow(4, i+1);
         outVertices = [];
     }
-    colors = icosphereColors(nbSubdivs);
-    
-    
     indices.nbTriangles = 20*Math.pow(4, nbSubdivs);
     vertices.nbVertices = indices.nbTriangles*6/4;
+    colors = icosphereColors(nbSubdivs, vertices);
     colors.nbColors = vertices.nbVertices;
     
     refVertices.valueOf = vertices;
