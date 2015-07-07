@@ -98,6 +98,8 @@ function initBuffers(){
     gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
     bufferIcosphere(nbSubdivs);
+    var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
+    display(msg);
 }
 
 function handleKeyDown(event){
@@ -116,19 +118,15 @@ function handleKeyDown(event){
     }
     if(event.keyCode == 90){
         camPos = vec3.add(camPos, camDirection, camPos);
-        // camPos[2] -= 0.2;
     }
     if(event.keyCode == 83){
         camPos = vec3.subtract(camPos, camDirection, camPos);
-        // camPos[2] += 0.2;
     }
     if(event.keyCode == 81){
         camPos = vec3.add(camPos, camRight, camPos);
-        // camPos[0] -= 0.2;
     }
     if(event.keyCode == 68){
         camPos = vec3.subtract(camPos, camRight, camPos);
-        // camPos[0] += 0.2;
     }
     if(event.keyCode == 65){
         camYaw -= 2;
@@ -200,6 +198,10 @@ function start(){
     
     
     var canvas = document.getElementById("canvas");
+
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
     initWebGL(canvas);
     initShaders();
     initBuffers();

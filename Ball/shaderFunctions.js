@@ -68,18 +68,8 @@ function initUniforms(){
     
     camRight = vec3.normalize(vec3.cross(camUp, camDirection, camRight));
     camDirection = vec3.normalize(vec3.subtract(camPos, camTarget, camDirection));
-    alert(" c parti camPos : " + camPos[0]+" " + camPos[1] + " " + camPos[2] + " camDirection " + camDirection[0] + " " + camDirection[1] + " " + camDirection[2] );
     mat4.lookAt(camPos, camTarget, camUp, viewMatrix);
-    // mat4.identity(sphereMvMatrix);
-    // mat4.translate(sphereMvMatrix, [0, 0, -8]);
     
-    
-    
-    // var msg = " ";
-    // for(var i = 0 ; i < 16 ; i++){
-        // msg += " "+sphereMvMatrix[i]+" ";
-    // }
-    // alert(msg);
     mat4.multiply(viewMatrix, sphereModelMatrix, sphereMvMatrix);
     mat4.toInverseMat3(sphereModelMatrix, normalMatrix);
     normalMatrix = mat3.transpose(normalMatrix);
