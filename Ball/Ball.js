@@ -12,17 +12,20 @@ var squareMvMatrix = mat4.create();
 
 var sphereModelMatrix = mat4.create();
 var squareModelMatrix = mat4.create();
-var viewMatrix = mat4.create();
+
 var pMatrix = mat4.create();
 var normalMatrix = mat3.create();
 var squareNormalMatrix = mat3.create();
-var lightDir = [1, 0.5, 1.3];
-var viewPos = [0, 2, 8];
+var lightDir = vec3.normalize([1, 1, 1]);
 var nbSubdivs = 2;
 var nbTriangles;
 var vYSphere = 0;
 var ySphere = 3;
-
+var camPos = [0, 2, 8];
+var camTarget = [0, 2, 0];
+var camDirection = vec3.normalize(camPos - camTarget);
+var camUp = [0, 1, 0];
+var viewMatrix = mat4.create();
 // var camPos = new glMatrix.ARRAY_TYPE(3);
 // var camTarget = new glMatrix.ARRAY_TYPE(3);
 // var camUp = new glMatrix.ARRAY_TYPE(3);
@@ -111,21 +114,28 @@ function handleKeyDown(event){
     }
     if(event.keyCode == 90){
         mat4.translate(viewMatrix, [0, 0, 0.2]);
-        viewPos[2] -= 0.2;
+        camPos[2] -= 0.2;
     }
     if(event.keyCode == 83){
         mat4.translate(viewMatrix, [0.0, 0, -0.2]);
-        viewPos[2] += 0.2;
+        camPos[2] += 0.2;
     }
     if(event.keyCode == 81){
         mat4.translate(viewMatrix, [0.2, 0, 0.0]);
-        viewPos[0] -= 0.2;
+        camPos[0] -= 0.2;
     }
     if(event.keyCode == 68){
         mat4.translate(viewMatrix, [-0.2, 0, 0.0]);
-        viewPos[0] += 0.2;
+        camPos[0] += 0.2;
     }
-    gl.uniform3fv(shaderProgram.viewPosUniform, viewPos);
+    // if(event.keyCode == 65){
+        // mat4.rotate(viewMatrix, degToRad(3), [0.0, 1.0, 0.0]);
+    // }
+    // if(event.keyCode == 69){
+        // mat4.rotate(viewMatrix, degToRad(-3), [0.0, 1.0, 0.0]);
+    // }
+    mat4.lookAt(camPos, camTarget, camUp, viewMatrix);
+    gl.uniform3fv(shaderProgram.viewPosUniform, camPos);
     var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
     display(msg);
 }

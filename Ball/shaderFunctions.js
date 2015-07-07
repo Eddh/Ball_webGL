@@ -65,9 +65,7 @@ function initUniforms(){
     mat4.translate(sphereModelMatrix, [0, ySphere, 0]);
     mat4.identity(squareModelMatrix);
     
-    mat4.identity(viewMatrix);
-    mat4.translate(viewMatrix, [0, -2, -8]);
-    
+    mat4.lookAt(camPos, camTarget, camUp, viewMatrix);
     // mat4.identity(sphereMvMatrix);
     // mat4.translate(sphereMvMatrix, [0, 0, -8]);
     
@@ -87,7 +85,7 @@ function initUniforms(){
     gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix3fv(shaderProgram.normalMatrixUniform, false, normalMatrix);
     gl.uniform3fv(shaderProgram.lightDirUniform, lightDir);
-    gl.uniform3fv(shaderProgram.viewPosUniform, viewPos);
+    gl.uniform3fv(shaderProgram.viewPosUniform, camPos);
 }
 function setMVUniformsSphere(){
     gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, sphereModelMatrix);
@@ -104,10 +102,10 @@ function setLightDirUniform(){
 }
 function updateNormalMatrix(){
     mat4.multiply(viewMatrix, sphereModelMatrix, sphereMvMatrix);
-    mat4.toInverseMat3(sphereMvMatrix, normalMatrix);
-    mat3.transpose(normalMatrix);
+    mat4.toInverseMat3(sphereModelMatrix, normalMatrix);
+    normalMatrix = mat3.transpose(normalMatrix);
     
     mat4.multiply(viewMatrix, squareModelMatrix, squareMvMatrix);
-    mat4.toInverseMat3(squareMvMatrix, squareNormalMatrix);
-    mat3.transpose(squareNormalMatrix);
+    mat4.toInverseMat3(squareNormalMatrix, squareNormalMatrix);
+    squareNormalMatrix = mat3.transpose(squareNormalMatrix);
 }
