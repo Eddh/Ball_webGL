@@ -21,11 +21,13 @@ var nbSubdivs = 2;
 var nbTriangles;
 var vYSphere = 0;
 var ySphere = 3;
-var camPos = [0, 2, 8];
-var camTarget = [0, 2, 0];
-var camDirection = vec3.normalize(camPos - camTarget);
-var camUp = [0, 1, 0];
+var camPos = vec3.create(new Array(0, 2, 8));
+var camTarget = vec3.create([0, 2, 0]);
+var camDirection = vec3.create();
+var camUp = vec3.create([0, 1, 0]);
+var camRight = vec3.create();
 var viewMatrix = mat4.create();
+var camYaw = -90;
 // var camPos = new glMatrix.ARRAY_TYPE(3);
 // var camTarget = new glMatrix.ARRAY_TYPE(3);
 // var camUp = new glMatrix.ARRAY_TYPE(3);
@@ -113,28 +115,31 @@ function handleKeyDown(event){
         }
     }
     if(event.keyCode == 90){
-        mat4.translate(viewMatrix, [0, 0, 0.2]);
-        camPos[2] -= 0.2;
+        camPos = vec3.add(camPos, camDirection, camPos);
+        // camPos[2] -= 0.2;
     }
     if(event.keyCode == 83){
-        mat4.translate(viewMatrix, [0.0, 0, -0.2]);
-        camPos[2] += 0.2;
+        camPos = vec3.subtract(camPos, camDirection, camPos);
+        // camPos[2] += 0.2;
     }
     if(event.keyCode == 81){
-        mat4.translate(viewMatrix, [0.2, 0, 0.0]);
-        camPos[0] -= 0.2;
+        camPos = vec3.add(camPos, camRight, camPos);
+        // camPos[0] -= 0.2;
     }
     if(event.keyCode == 68){
-        mat4.translate(viewMatrix, [-0.2, 0, 0.0]);
-        camPos[0] += 0.2;
+        camPos = vec3.subtract(camPos, camRight, camPos);
+        // camPos[0] += 0.2;
     }
-    // if(event.keyCode == 65){
-        // mat4.rotate(viewMatrix, degToRad(3), [0.0, 1.0, 0.0]);
-    // }
-    // if(event.keyCode == 69){
-        // mat4.rotate(viewMatrix, degToRad(-3), [0.0, 1.0, 0.0]);
-    // }
-    mat4.lookAt(camPos, camTarget, camUp, viewMatrix);
+    if(event.keyCode == 65){
+        camYaw -= 2;
+    }
+    if(event.keyCode == 69){
+        camYaw += 2;
+    }
+    camDirection[0] = Math.cos(degToRad(camYaw));
+    camDirection[2] = Math.sin(degToRad(camYaw));
+    camRight = vec3.normalize(vec3.cross(camUp, camDirection, camRight));
+    mat4.lookAt(camPos, vec3.add(camDirection, camPos, camTarget), camUp, viewMatrix);
     gl.uniform3fv(shaderProgram.viewPosUniform, camPos);
     var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
     display(msg);
@@ -191,6 +196,8 @@ function tick(){
 }
 
 function start(){
+    
+    
     
     var canvas = document.getElementById("canvas");
     initWebGL(canvas);

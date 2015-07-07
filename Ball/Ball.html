@@ -31,15 +31,14 @@
                 
                 vec3 viewDir = normalize(uViewPos - vFragPos);
                 vec3 reflectDir = reflect(-uLightDir, normal); 
-                
-                
+               
                 float diff = max(dot(normal, normalize(uLightDir)), 0.0);
-                vec3 diffuse = vec3(diff, diff, diff);
+                vec3 diffuse = vec3(diff, diff, diff*0.8);
                 float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
-                vec3 specular = specularStrength * spec * vec3(1.0, 1.0, 1.0); 
+                vec3 specular = specularStrength * spec * vec3(1.0, 1.0, 0.8); 
                 
                 vec3 color = vColor.xyz;
-                
+                // coloring in order to make the vertices and edges more visibles
                 color = 0.1 + sqrt(15.0*(1.0-length(vPosOnSphere)))*color;
                 if(vPosOnSphere.y < 0.5 && vPosOnSphere.y > 0.45 || vPosOnSphere.y < -0.45 && vPosOnSphere.y > -0.5 ||  vPosOnSphere.x < 0.025 && vPosOnSphere.x > -0.025){
                     color = vec3(1.0, 1.0, 1.0);
@@ -69,6 +68,8 @@
             void main(void) {
                 
                 vPosOnSphere = aVertexPosition;
+                
+                // compressing the bottom of the ball when it hits the ground
                 float height = uModel[3][1];
                 float posY = aVertexPosition.y;
                 if(height < 1.0 && posY < 0.0){

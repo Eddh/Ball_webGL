@@ -174,6 +174,4 @@ function bufferIcosphere(nbSubdivs){
     gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, sphereColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
     nbTriangles = sphereIndices.nbTriangles;
-    // var msg = "nbVertices : "+sphereVertices.nbVertices + " nbTriangles : " + sphereIndices.nbTriangles;
-    // alert(msg);
 }
