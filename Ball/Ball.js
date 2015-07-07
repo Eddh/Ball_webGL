@@ -98,7 +98,7 @@ function initBuffers(){
     gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
     bufferIcosphere(nbSubdivs);
-    var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
+    var msg  = "nbSubdivs : "+nbSubdivs+"</br> nbTriangles : " + nbTriangles;
     display(msg);
 }
 
@@ -139,7 +139,7 @@ function handleKeyDown(event){
     camRight = vec3.normalize(vec3.cross(camUp, camDirection, camRight));
     mat4.lookAt(camPos, vec3.add(camDirection, camPos, camTarget), camUp, viewMatrix);
     gl.uniform3fv(shaderProgram.viewPosUniform, camPos);
-    var msg  = "nbSubdivs : "+nbSubdivs+" nbTriangles : " + nbTriangles;
+    var msg  = "nbSubdivs : "+nbSubdivs+"</br> nbTriangles : " + nbTriangles;
     display(msg);
 }
 function handleKeyUp(event){
