@@ -175,14 +175,11 @@ function drawScene(){
 
 function nextFrame(){
     
-    vYSphere -= 0.001;
-    if(ySphere > 1){
-        vYSphere -= 0.001;
+    vYSphere -= 0.0013;
+    if (ySphere > 0.5 && ySphere < 1){
+        vYSphere += 0.04*(1-ySphere);
     }
-    else if (ySphere > 0.5){
-        vYSphere += 0.04*(1-ySphere) - 0.001;
-    }
-    else{// just in case
+    else if (ySphere < 0.0){// just in case
         vYSphere += 0.1;
     }
     
