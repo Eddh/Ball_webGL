@@ -11,10 +11,12 @@ var sphereMvMatrix = mat4.create();
 var squareMvMatrix = mat4.create();
 
 var sphereModelMatrix = mat4.create();
+var botSphereModelMatrix = mat4.create();
 var squareModelMatrix = mat4.create();
 
 var pMatrix = mat4.create();
 var normalMatrix = mat3.create();
+var botNormalMatrix = mat3.create();
 var squareNormalMatrix = mat3.create();
 var lightDir = vec3.normalize([1, 1, 1]);
 var nbSubdivs = 2;
@@ -87,10 +89,10 @@ function initBuffers(){
     
     gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
     var colors = [
-        1, 0, 0, 1,
-        0, 1, 0, 1,
-        0, 0, 1, 1,
-        1, 1, 0, 1
+        0.5, 0.5, 0.5, 1,
+        0.5, 0.5, 0.5, 1,
+        0.5, 0.5, 0.5, 1,
+        0.5, 0.5, 0.5, 1
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     squareColorBuffer.itemSize = 4;
@@ -157,7 +159,7 @@ function drawScene(){
     gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareIndexBuffer);
     
     gl.drawElements(gl.TRIANGLES, squareIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
@@ -173,10 +175,10 @@ function drawScene(){
 
 function nextFrame(){
     if(ySphere > 0.6){
-        vYSphere -= 0.0015;
+        vYSphere -= 0.0010;
     }
     else{
-       vYSphere = 0.09; 
+       vYSphere = 0.07; 
     }
     
     ySphere += vYSphere;

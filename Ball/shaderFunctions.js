@@ -55,7 +55,8 @@ function initShaders(){
     shaderProgram.viewMatrixUniform = gl.getUniformLocation(shaderProgram, "uView");
     shaderProgram.normalMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
     shaderProgram.lightDirUniform = gl.getUniformLocation(shaderProgram, "uLightDir");
-    shaderProgram.viewPosUniform = gl.getUniformLocation(shaderProgram, "uViewPos")
+    shaderProgram.viewPosUniform = gl.getUniformLocation(shaderProgram, "uViewPos");
+    shaderProgram.botNormalMatrixUniform = gl.getUniformLocation(shaderProgram, "uBotNMatrix");
     
 }
 function initUniforms(){
@@ -74,6 +75,12 @@ function initUniforms(){
     mat4.toInverseMat3(sphereModelMatrix, normalMatrix);
     normalMatrix = mat3.transpose(normalMatrix);
     
+    mat4.set(sphereModelMatrix, botSphereModelMatrix);
+    mat4.scale(botSphereModelMatrix, [1, ySphere, 1], botSphereModelMatrix);
+    
+    mat4.toInverseMat3(botSphereModelMatrix, botNormalMatrix);
+    botNormalMatrix = mat3.transpose(botNormalMatrix);
+    
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
     gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, sphereModelMatrix);
     gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
@@ -86,6 +93,7 @@ function setMVUniformsSphere(){
     gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, sphereModelMatrix);
     gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix3fv(shaderProgram.normalMatrixUniform, false, normalMatrix);
+    gl.uniformMatrix3fv(shaderProgram.botNormalMatrixUniform, false, botNormalMatrix);
 }
 function setMVUniformsSquare(){
     gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, squareModelMatrix);
@@ -99,6 +107,11 @@ function updateNormalMatrix(){
     mat4.multiply(viewMatrix, sphereModelMatrix, sphereMvMatrix);
     mat4.toInverseMat3(sphereModelMatrix, normalMatrix);
     normalMatrix = mat3.transpose(normalMatrix);
+    
+    mat4.set(sphereModelMatrix, botSphereModelMatrix);
+    mat4.scale(botSphereModelMatrix, [1, ySphere, 1], botSphereModelMatrix);
+    mat4.toInverseMat3(botSphereModelMatrix, botNormalMatrix);
+    botNormalMatrix = mat3.transpose(botNormalMatrix);
     
     mat4.multiply(viewMatrix, squareModelMatrix, squareMvMatrix);
     mat4.toInverseMat3(squareNormalMatrix, squareNormalMatrix);
