@@ -174,17 +174,16 @@ function drawScene(){
 }
 
 function nextFrame(){
-    // if(ySphere > 0.6){
-        // vYSphere -= 0.0010;
-    // }
-    // else{
-       // vYSphere = 0.07; 
-    // }
+    
+    vYSphere -= 0.001;
     if(ySphere > 1){
         vYSphere -= 0.001;
     }
     else if (ySphere > 0.5){
-        vYSphere += 0.007;
+        vYSphere += 0.04*(1-ySphere) - 0.001;
+    }
+    else{// just in case
+        vYSphere += 0.1;
     }
     
     ySphere += vYSphere;
