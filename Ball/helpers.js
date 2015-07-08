@@ -175,3 +175,41 @@ function bufferIcosphere(nbSubdivs){
     
     nbTriangles = sphereIndices.nbTriangles;
 }
+function bufferSquare(){
+    gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
+    var vertices = [
+         10.0, 0,  10.0,
+        -10.0, 0,  10.0,
+         10.0, 0,  -10.0,
+        -10.0, 0,  -10.0
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    squareVertexArrayBuffer.itemSize = 3;
+    squareVertexArrayBuffer.numItems = 4;
+    
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    
+    // Indices
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareIndexBuffer);
+    var vertexIndices = [
+        0, 1, 2,
+        2, 3, 1
+    ];
+    
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
+    squareIndexBuffer.itemSize = 1;
+    squareIndexBuffer.numItems = 6;
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
+    var colors = [
+        0.5, 0.5, 0.5, 1,
+        0.5, 0.5, 0.5, 1,
+        0.5, 0.5, 0.5, 1,
+        0.5, 0.5, 0.5, 1
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    squareColorBuffer.itemSize = 4;
+    squareColorBuffer.numItems = 4;
+    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    
+}

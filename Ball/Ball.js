@@ -15,7 +15,7 @@ var botSphereModelMatrix = mat4.create();
 var squareModelMatrix = mat4.create();
 
 var pMatrix = mat4.create();
-var normalMatrix = mat3.create();
+var sphereNormalMatrix = mat3.create();
 var botNormalMatrix = mat3.create();
 var squareNormalMatrix = mat3.create();
 var lightPos = vec3.create([3, 3, 3]);
@@ -30,6 +30,7 @@ var camUp = vec3.create([0, 1, 0]);
 var camRight = vec3.create();
 var viewMatrix = mat4.create();
 var camYaw = -90;
+var keys = new Object();
 // var camPos = new glMatrix.ARRAY_TYPE(3);
 // var camTarget = new glMatrix.ARRAY_TYPE(3);
 // var camUp = new glMatrix.ARRAY_TYPE(3);
@@ -54,7 +55,6 @@ function initWebGL(canvas){
 }
 
 function initBuffers(){
-    // Vertices
     squareVertexArrayBuffer = gl.createBuffer();
     squareIndexBuffer = gl.createBuffer();
     squareColorBuffer = gl.createBuffer();
@@ -63,42 +63,7 @@ function initBuffers(){
     sphereIndexBuffer = gl.createBuffer();
     sphereColorBuffer = gl.createBuffer();
     
-    gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
-    var vertices = [
-         10.0, 0,  10.0,
-        -10.0, 0,  10.0,
-         10.0, 0,  -10.0,
-        -10.0, 0,  -10.0
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    squareVertexArrayBuffer.itemSize = 3;
-    squareVertexArrayBuffer.numItems = 4;
-    
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
-    
-    // Indices
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareIndexBuffer);
-    var vertexIndices = [
-        0, 1, 2,
-        2, 3, 1
-    ];
-    
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
-    squareIndexBuffer.itemSize = 1;
-    squareIndexBuffer.numItems = 6;
-    
-    gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
-    var colors = [
-        0.5, 0.5, 0.5, 1,
-        0.5, 0.5, 0.5, 1,
-        0.5, 0.5, 0.5, 1,
-        0.5, 0.5, 0.5, 1
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-    squareColorBuffer.itemSize = 4;
-    squareColorBuffer.numItems = 4;
-    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-    
+    bufferSquare();
     bufferIcosphere(nbSubdivs);
     var msg  = "nbSubdivs : "+nbSubdivs+"</br> nbTriangles : " + nbTriangles;
     display(msg);
@@ -106,46 +71,57 @@ function initBuffers(){
 
 function handleKeyDown(event){
     var content = document.getElementById('content');
-    if (event.keyCode == 40){
+    if (event.keyCode == 40){// UP arrow
         if(nbSubdivs > 1){
             nbSubdivs--;
             bufferIcosphere(nbSubdivs);
         }
     }
-    if(event.keyCode == 38){
+    if(event.keyCode == 38){// DOWN arrow
         if(nbSubdivs < 6){
             nbSubdivs++;
             bufferIcosphere(nbSubdivs);
         }
     }
-    if(event.keyCode == 90){
-        camPos = vec3.add(camPos, camDirection, camPos);
+    if(event.keyCode == 90){// Z key
+        keys.z = 1;
     }
-    if(event.keyCode == 83){
-        camPos = vec3.subtract(camPos, camDirection, camPos);
+    if(event.keyCode == 83){// S key
+        keys.s = 1;
     }
-    if(event.keyCode == 81){
-        camPos = vec3.add(camPos, camRight, camPos);
+    if(event.keyCode == 81){// Q key
+        keys.q = 1;
     }
-    if(event.keyCode == 68){
-        camPos = vec3.subtract(camPos, camRight, camPos);
+    if(event.keyCode == 68){// D key
+        keys.d = 1;
     }
-    if(event.keyCode == 65){
-        camYaw -= 2;
+    if(event.keyCode == 65){//A key
+        keys.a = 1;
     }
-    if(event.keyCode == 69){
-        camYaw += 2;
+    if(event.keyCode == 69){//E key
+        keys.e = 1;
     }
-    camDirection[0] = Math.cos(degToRad(camYaw));
-    camDirection[2] = Math.sin(degToRad(camYaw));
-    camRight = vec3.normalize(vec3.cross(camUp, camDirection, camRight));
-    mat4.lookAt(camPos, vec3.add(camDirection, camPos, camTarget), camUp, viewMatrix);
-    gl.uniform3fv(shaderProgram.viewPosUniform, camPos);
-    var msg  = "nbSubdivs : "+nbSubdivs+"</br> nbTriangles : " + nbTriangles;
-    display(msg);
 }
 function handleKeyUp(event){
-    
+    if(event.keyCode == 90){// Z key
+        
+        keys.z = 0;
+    }
+    if(event.keyCode == 83){// S key
+        keys.s = 0;
+    }
+    if(event.keyCode == 81){// Q key
+        keys.q = 0;
+    }
+    if(event.keyCode == 68){// D key
+        keys.d = 0;
+    }
+    if(event.keyCode == 65){//A key
+        keys.a = 0;
+    }
+    if(event.keyCode == 69){//E key
+        keys.e = 0;
+    }
 }
 
 function drawScene(){
@@ -153,15 +129,12 @@ function drawScene(){
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-    // gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexArrayBuffer.numItems);
     setMVUniformsSquare();
     gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexArrayBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexArrayBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareIndexBuffer);
-    
     gl.drawElements(gl.TRIANGLES, squareIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     
     setMVUniformsSphere();
@@ -174,7 +147,37 @@ function drawScene(){
 }
 
 function nextFrame(){
+    var dirMov = vec3.scale(camDirection, 0.3);
+    var rightMov = vec3.scale(camRight, 0.3);
+    if(keys.z){// Z key
+        camPos = vec3.add(camPos, dirMov, camPos);
+    }
+    if(keys.s){// S key
+        camPos = vec3.subtract(camPos, dirMov, camPos);
+    }
+    if(keys.q){// Q key
+        camPos = vec3.add(camPos, rightMov, camPos);
+    }
+    if(keys.d){// D key
+        camPos = vec3.subtract(camPos, rightMov, camPos);
+    }
+    if(keys.a){//A key
+        camYaw -= 1;
+    }
+    if(keys.e){//E key
+        camYaw += 1;
+    }
     
+    camDirection[0] = Math.cos(degToRad(camYaw));
+    camDirection[2] = Math.sin(degToRad(camYaw));
+    camRight = vec3.normalize(vec3.cross(camUp, camDirection, camRight));
+    mat4.lookAt(camPos, vec3.add(camDirection, camPos, camTarget), camUp, viewMatrix);
+    gl.uniform3fv(shaderProgram.viewPosUniform, camPos);
+    var msg  = "nbSubdivs : "+nbSubdivs+"</br> nbTriangles : " + nbTriangles;
+    display(msg);
+    
+    
+    // ball physics
     vYSphere -= 0.0015;
     if (ySphere > 0.5 && ySphere < 1){
         vYSphere += 0.05*(1-ySphere);
@@ -198,8 +201,6 @@ function tick(){
 }
 
 function start(){
-    
-    
     
     var canvas = document.getElementById("canvas");
 
