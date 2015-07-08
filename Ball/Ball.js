@@ -18,7 +18,7 @@ var pMatrix = mat4.create();
 var normalMatrix = mat3.create();
 var botNormalMatrix = mat3.create();
 var squareNormalMatrix = mat3.create();
-var lightDir = vec3.normalize([1, 1, 1]);
+var lightPos = vec3.create([3, 3, 3]);
 var nbSubdivs = 2;
 var nbTriangles;
 var vYSphere = 0;

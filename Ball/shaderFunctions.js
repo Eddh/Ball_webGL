@@ -54,7 +54,7 @@ function initShaders(){
     shaderProgram.sphereModelMatrixUniform = gl.getUniformLocation(shaderProgram, "uModel");
     shaderProgram.viewMatrixUniform = gl.getUniformLocation(shaderProgram, "uView");
     shaderProgram.normalMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
-    shaderProgram.lightDirUniform = gl.getUniformLocation(shaderProgram, "uLightDir");
+    shaderProgram.lightPosUniform = gl.getUniformLocation(shaderProgram, "uLightPos");
     shaderProgram.viewPosUniform = gl.getUniformLocation(shaderProgram, "uViewPos");
     shaderProgram.botNormalMatrixUniform = gl.getUniformLocation(shaderProgram, "uBotNMatrix");
     
@@ -68,7 +68,8 @@ function initUniforms(){
     mat4.identity(squareModelMatrix);
     
     camRight = vec3.normalize(vec3.cross(camUp, camDirection, camRight));
-    camDirection = vec3.normalize(vec3.subtract(camPos, camTarget, camDirection));
+    camDirection[0] = Math.cos(degToRad(camYaw));
+    camDirection[2] = Math.sin(degToRad(camYaw));
     mat4.lookAt(camPos, camTarget, camUp, viewMatrix);
     
     mat4.multiply(viewMatrix, sphereModelMatrix, sphereMvMatrix);
@@ -85,7 +86,7 @@ function initUniforms(){
     gl.uniformMatrix4fv(shaderProgram.sphereModelMatrixUniform, false, sphereModelMatrix);
     gl.uniformMatrix4fv(shaderProgram.viewMatrixUniform, false, viewMatrix);
     gl.uniformMatrix3fv(shaderProgram.normalMatrixUniform, false, normalMatrix);
-    gl.uniform3fv(shaderProgram.lightDirUniform, lightDir);
+    gl.uniform3fv(shaderProgram.lightPosUniform, lightPos);
     gl.uniform3fv(shaderProgram.viewPosUniform, camPos);
     
 }
