@@ -107,7 +107,7 @@ function initBuffers(){
 function handleKeyDown(event){
     var content = document.getElementById('content');
     if (event.keyCode == 40){
-        if(nbSubdivs > 0){
+        if(nbSubdivs > 1){
             nbSubdivs--;
             bufferIcosphere(nbSubdivs);
         }
@@ -174,11 +174,17 @@ function drawScene(){
 }
 
 function nextFrame(){
-    if(ySphere > 0.6){
-        vYSphere -= 0.0010;
+    // if(ySphere > 0.6){
+        // vYSphere -= 0.0010;
+    // }
+    // else{
+       // vYSphere = 0.07; 
+    // }
+    if(ySphere > 1){
+        vYSphere -= 0.001;
     }
-    else{
-       vYSphere = 0.07; 
+    else if (ySphere > 0.5){
+        vYSphere += 0.007;
     }
     
     ySphere += vYSphere;

@@ -54,7 +54,6 @@
                 color.x = (diffuse.x + ambient.x + specular.x)*color.x;
                 color.y = (diffuse.y + ambient.y + specular.y)*color.y;
                 color.z = (diffuse.z + ambient.z + specular.z)*color.z;
-                //color = 0.5 + 0.5*normal;
                 gl_FragColor = vec4(color, 1.0);
            }
         </script>
